@@ -10,7 +10,7 @@ class JiraIssue(models.Model):
         'helpdesk.ticket', 'jira_issue_id', string="Tickets d'assistance", readonly=True,
         groups='helpdesk.group_helpdesk_user')
     helpdesk_ticket_count = fields.Integer(
-        string="Tickets d'assistance", compute='_compute_helpdesk_ticket_count',
+        string="Nombre de tickets d'assistance", compute='_compute_helpdesk_ticket_count',
         groups='helpdesk.group_helpdesk_user')
 
     def _compute_helpdesk_ticket_count(self):
