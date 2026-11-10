@@ -1,6 +1,6 @@
 {
     'name': 'Eurekam - Lien Assistance / Jira',
-    'version': '18.0.1.0.0',
+    'version': '18.0.1.0.1',
     'category': 'Services/Helpdesk',
     'summary': "Affiche sur les tickets d'assistance l'état du ticket Jira lié",
     'description': """
