@@ -1,0 +1,14 @@
+{
+    "environment": "TEST",
+    "url": "https://eurekam-sandbox.odoo.com",
+    "database": "eurekam-sandbox-XXXXXXXX",
+    "database_pattern": "^eurekam-sandbox(-\\d+)?$",
+    "username": "prenom.nom@eurekam.fr",
+    "password": "REMPLACER_PAR_LE_MOT_DE_PASSE_OU_LA_CLE_API",
+    "production_uuid": "96e026e0-4de0-11e8-ae51-020000fbd37d",
+    "safety_check": {
+        "require_test_in_url": true,
+        "forbidden_url_keywords": ["prod", "production", "main"],
+        "require_explicit_confirmation": false
+    }
+}

@@ -1,0 +1,84 @@
+[
+  {
+    "id": "30101",
+    "key": "DC-1",
+    "fields": {
+      "summary": "Ticket de test 3",
+      "issuetype": {
+        "id": "10001",
+        "name": "Story"
+      },
+      "status": {
+        "name": "En cours",
+        "statusCategory": {
+          "key": "indeterminate"
+        }
+      },
+      "priority": {
+        "name": "Medium"
+      },
+      "resolution": null,
+      "created": "2025-01-10T09:00:00.000+0100",
+      "updated": "2025-02-01T10:00:00.000+0100",
+      "resolutiondate": null,
+      "duedate": null,
+      "fixVersions": [],
+      "components": [
+        {
+          "name": "Interface"
+        }
+      ],
+      "labels": [
+        "test"
+      ],
+      "project": {
+        "id": "10007",
+        "key": "DC",
+        "name": "Projet de test DC"
+      },
+      "assignee": null,
+      "customfield_10020": null
+    }
+  },
+  {
+    "id": "30102",
+    "key": "DC-2",
+    "fields": {
+      "summary": "Ticket de test 4",
+      "issuetype": {
+        "id": "10001",
+        "name": "Story"
+      },
+      "status": {
+        "name": "À faire",
+        "statusCategory": {
+          "key": "new"
+        }
+      },
+      "priority": {
+        "name": "Medium"
+      },
+      "resolution": null,
+      "created": "2025-01-10T09:00:00.000+0100",
+      "updated": "2025-02-01T10:00:00.000+0100",
+      "resolutiondate": null,
+      "duedate": null,
+      "fixVersions": [],
+      "components": [
+        {
+          "name": "Interface"
+        }
+      ],
+      "labels": [
+        "test"
+      ],
+      "project": {
+        "id": "10007",
+        "key": "DC",
+        "name": "Projet de test DC"
+      },
+      "assignee": null,
+      "customfield_10020": null
+    }
+  }
+]

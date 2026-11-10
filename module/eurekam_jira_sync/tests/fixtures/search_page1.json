@@ -1,0 +1,94 @@
+[
+  {
+    "id": "30001",
+    "key": "DA-1",
+    "fields": {
+      "summary": "Ticket de test 1",
+      "issuetype": {
+        "id": "10001",
+        "name": "Story"
+      },
+      "status": {
+        "name": "Terminé",
+        "statusCategory": {
+          "key": "done"
+        }
+      },
+      "priority": {
+        "name": "Medium"
+      },
+      "resolution": {
+        "name": "Done"
+      },
+      "created": "2025-01-10T09:00:00.000+0100",
+      "updated": "2025-02-01T10:00:00.000+0100",
+      "resolutiondate": "2025-02-01T10:00:00.000+0100",
+      "duedate": null,
+      "fixVersions": [
+        {
+          "id": "20001",
+          "name": "1.0.0",
+          "archived": false,
+          "released": true,
+          "releaseDate": "2025-03-01"
+        }
+      ],
+      "components": [
+        {
+          "name": "Interface"
+        }
+      ],
+      "labels": [
+        "test"
+      ],
+      "project": {
+        "id": "10006",
+        "key": "DA",
+        "name": "Projet de test DA"
+      },
+      "assignee": null,
+      "customfield_10020": null
+    }
+  },
+  {
+    "id": "30002",
+    "key": "DA-2",
+    "fields": {
+      "summary": "Ticket de test 2",
+      "issuetype": {
+        "id": "10001",
+        "name": "Story"
+      },
+      "status": {
+        "name": "À faire",
+        "statusCategory": {
+          "key": "new"
+        }
+      },
+      "priority": {
+        "name": "Medium"
+      },
+      "resolution": null,
+      "created": "2025-01-10T09:00:00.000+0100",
+      "updated": "2025-02-01T10:00:00.000+0100",
+      "resolutiondate": null,
+      "duedate": null,
+      "fixVersions": [],
+      "components": [
+        {
+          "name": "Interface"
+        }
+      ],
+      "labels": [
+        "test"
+      ],
+      "project": {
+        "id": "10006",
+        "key": "DA",
+        "name": "Projet de test DA"
+      },
+      "assignee": null,
+      "customfield_10020": null
+    }
+  }
+]

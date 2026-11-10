@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="module_category_jira" model="ir.module.category">
+        <field name="name">Développement Drugcam</field>
+        <field name="description">Accès aux données Jira synchronisées.</field>
+        <field name="sequence">60</field>
+    </record>
+
+    <record id="group_jira_reader" model="res.groups">
+        <field name="name">Jira : lecteur</field>
+        <field name="category_id" ref="module_category_jira"/>
+        <field name="comment">Lecture des tickets, versions et sprints Jira synchronisés.</field>
+    </record>
+
+    <record id="group_jira_admin" model="res.groups">
+        <field name="name">Jira : administrateur</field>
+        <field name="category_id" ref="module_category_jira"/>
+        <field name="implied_ids" eval="[(4, ref('group_jira_reader'))]"/>
+        <field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
+        <field name="comment">Paramètres, synchronisation manuelle et journaux.</field>
+    </record>
+</odoo>

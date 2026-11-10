@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_jira_root" name="Développement Drugcam"
+              web_icon="eurekam_jira_sync,static/description/icon.png"
+              groups="group_jira_reader" sequence="80"/>
+
+    <menuitem id="menu_jira_issue" name="Tickets Jira" parent="menu_jira_root"
+              action="action_jira_issue" sequence="10"/>
+    <menuitem id="menu_jira_version" name="Versions" parent="menu_jira_root"
+              action="action_jira_version" sequence="20"/>
+    <menuitem id="menu_jira_sprint" name="Sprints" parent="menu_jira_root"
+              action="action_jira_sprint" sequence="30"/>
+    <menuitem id="menu_jira_sync_log" name="Journal de synchronisation" parent="menu_jira_root"
+              action="action_jira_sync_log" groups="group_jira_admin" sequence="40"/>
+
+    <menuitem id="menu_jira_config" name="Configuration" parent="menu_jira_root"
+              groups="group_jira_admin" sequence="90"/>
+    <menuitem id="menu_jira_project" name="Projets Jira" parent="menu_jira_config"
+              action="action_jira_project" sequence="10"/>
+    <menuitem id="menu_jira_settings" name="Paramètres" parent="menu_jira_config"
+              action="action_jira_settings" groups="base.group_system" sequence="20"/>
+</odoo>

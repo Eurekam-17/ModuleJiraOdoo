@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_jira_project_reader,jira.project lecteur,model_jira_project,group_jira_reader,1,0,0,0
+access_jira_project_admin,jira.project administrateur,model_jira_project,group_jira_admin,1,1,0,0
+access_jira_version_reader,jira.version lecteur,model_jira_version,group_jira_reader,1,0,0,0
+access_jira_sprint_reader,jira.sprint lecteur,model_jira_sprint,group_jira_reader,1,0,0,0
+access_jira_issue_reader,jira.issue lecteur,model_jira_issue,group_jira_reader,1,0,0,0
+access_jira_sync_log_admin,jira.sync.log administrateur,model_jira_sync_log,group_jira_admin,1,1,0,0

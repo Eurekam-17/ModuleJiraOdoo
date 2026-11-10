@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Helpdesk users see the Jira data linked to their tickets. -->
+    <record id="helpdesk.group_helpdesk_user" model="res.groups">
+        <field name="implied_ids" eval="[(4, ref('eurekam_jira_sync.group_jira_reader'))]"/>
+    </record>
+</odoo>

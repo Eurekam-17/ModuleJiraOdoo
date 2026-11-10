@@ -1,0 +1,8 @@
+{
+  "accountId": "opaque-account-id",
+  "emailAddress": "compte-technique@example.com",
+  "displayName": "Compte technique",
+  "active": true,
+  "timeZone": "Europe/Paris",
+  "locale": "fr_FR"
+}

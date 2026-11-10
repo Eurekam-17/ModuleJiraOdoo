@@ -1,0 +1,21 @@
+[
+  {
+    "id": "20001",
+    "name": "1.0.0",
+    "archived": false,
+    "released": true,
+    "releaseDate": "2025-03-01",
+    "startDate": "2025-01-01",
+    "projectId": 10006,
+    "description": "Version de test livrée"
+  },
+  {
+    "id": "20002",
+    "name": "1.1.0",
+    "archived": false,
+    "released": false,
+    "releaseDate": "2025-06-01",
+    "projectId": 10006,
+    "description": "Date passée mais non livrée"
+  }
+]

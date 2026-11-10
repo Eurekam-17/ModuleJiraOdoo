@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="jira_issue_view_form_helpdesk" model="ir.ui.view">
+        <field name="name">jira.issue.form.helpdesk</field>
+        <field name="model">jira.issue</field>
+        <field name="inherit_id" ref="eurekam_jira_sync.jira_issue_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_helpdesk_tickets" type="object" class="oe_stat_button"
+                        icon="fa-life-ring" groups="helpdesk.group_helpdesk_user">
+                    <field name="helpdesk_ticket_count" widget="statinfo"
+                           string="Tickets d'assistance"/>
+                </button>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="jira_issue_view_list_helpdesk" model="ir.ui.view">
+        <field name="name">jira.issue.list.helpdesk</field>
+        <field name="model">jira.issue</field>
+        <field name="inherit_id" ref="eurekam_jira_sync.jira_issue_view_list"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='resolved_at']" position="after">
+                <field name="helpdesk_ticket_count" optional="hide"
+                       groups="helpdesk.group_helpdesk_user"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="jira_issue_view_search_helpdesk" model="ir.ui.view">
+        <field name="name">jira.issue.search.helpdesk</field>
+        <field name="model">jira.issue</field>
+        <field name="inherit_id" ref="eurekam_jira_sync.jira_issue_view_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='filter_open_1y']" position="after">
+                <filter name="filter_helpdesk_linked" string="Liés à un ticket d'assistance"
+                        domain="[('helpdesk_ticket_ids', '!=', False)]"
+                        groups="helpdesk.group_helpdesk_user"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

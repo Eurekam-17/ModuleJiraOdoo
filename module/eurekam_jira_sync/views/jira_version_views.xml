@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="jira_version_view_list" model="ir.ui.view">
+        <field name="name">jira.version.list</field>
+        <field name="model">jira.version</field>
+        <field name="arch" type="xml">
+            <list string="Versions Jira" create="0" edit="0" delete="0"
+                  decoration-muted="archived" decoration-success="released">
+                <field name="project_id"/>
+                <field name="name"/>
+                <field name="released"/>
+                <field name="archived" optional="hide"/>
+                <field name="start_date" optional="hide"/>
+                <field name="release_date"/>
+                <field name="open_issue_count"/>
+                <field name="description" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="jira_version_view_form" model="ir.ui.view">
+        <field name="name">jira.version.form</field>
+        <field name="model">jira.version</field>
+        <field name="arch" type="xml">
+            <form string="Version Jira" create="0" edit="0" delete="0">
+                <sheet>
+                    <div class="oe_title"><h1><field name="name"/></h1></div>
+                    <group>
+                        <group>
+                            <field name="project_id"/>
+                            <field name="released"/>
+                            <field name="archived"/>
+                            <field name="open_issue_count"/>
+                        </group>
+                        <group>
+                            <field name="start_date"/>
+                            <field name="release_date"/>
+                            <field name="description"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Tickets" name="issues">
+                            <field name="issue_ids">
+                                <list>
+                                    <field name="key"/>
+                                    <field name="issue_type"/>
+                                    <field name="summary"/>
+                                    <field name="status"/>
+                                    <field name="is_open"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="jira_version_view_search" model="ir.ui.view">
+        <field name="name">jira.version.search</field>
+        <field name="model">jira.version</field>
+        <field name="arch" type="xml">
+            <search string="Versions Jira">
+                <field name="name"/>
+                <field name="project_id"/>
+                <filter name="filter_released" string="Livrées" domain="[('released', '=', True)]"/>
+                <filter name="filter_unreleased" string="Non livrées" domain="[('released', '=', False)]"/>
+                <separator/>
+                <filter name="filter_not_archived" string="Non archivées dans Jira"
+                        domain="[('archived', '=', False)]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_project" string="Projet" context="{'group_by': 'project_id'}"/>
+                    <filter name="group_release" string="Mois de livraison"
+                            context="{'group_by': 'release_date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_jira_version" model="ir.actions.act_window">
+        <field name="name">Versions</field>
+        <field name="res_model">jira.version</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_filter_not_archived': 1}</field>
+    </record>
+</odoo>

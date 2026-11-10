@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_helpdesk" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.eurekam_jira_helpdesk</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="eurekam_jira_sync.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//block[@name='jira_sync_block']" position="after">
+                <block title="Assistance" name="jira_helpdesk_block">
+                    <setting id="jira_migrate_property_setting"
+                             string="Ancien champ « Ticket Jira »"
+                             help="Recopie les valeurs de l'ancien champ propriété « Ticket Jira » des tickets d'assistance dans le nouveau champ. Sans effet sur un ticket déjà renseigné ; les valeurs illisibles sont signalées dans le journal de synchronisation.">
+                        <button name="action_migrate_jira_property" type="object"
+                                string="Lancer la migration" class="btn-link" icon="oi-arrow-right"/>
+                    </setting>
+                </block>
+            </xpath>
+        </field>
+    </record>
+</odoo>

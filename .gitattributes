@@ -1,0 +1,26 @@
+# Normalise les fins de ligne : LF dans le repo, conversion auto cote OS.
+# Evite les warnings CRLF/LF a chaque commit sous Windows.
+* text=auto eol=lf
+
+# Python / XML / CSV / docs : toujours LF
+*.py     text eol=lf
+*.xml    text eol=lf
+*.csv    text eol=lf
+*.json   text eol=lf
+*.md     text eol=lf
+*.po     text eol=lf
+*.txt    text eol=lf
+*.yml    text eol=lf
+*.yaml   text eol=lf
+
+# Scripts batch Windows : CRLF obligatoire
+*.bat    text eol=crlf
+*.cmd    text eol=crlf
+
+# Binaires
+*.png    binary
+*.jpg    binary
+*.jpeg   binary
+*.gif    binary
+*.ico    binary
+*.pdf    binary

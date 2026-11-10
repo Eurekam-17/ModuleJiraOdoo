@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- Default values; the API token is NEVER shipped here: it is typed in
+         the settings page by a system administrator. -->
+    <record id="param_base_url" model="ir.config_parameter">
+        <field name="key">eurekam_jira.base_url</field>
+        <field name="value">https://eurekam.atlassian.net</field>
+    </record>
+    <record id="param_project_keys" model="ir.config_parameter">
+        <field name="key">eurekam_jira.project_keys</field>
+        <field name="value">DA,DC,DP</field>
+    </record>
+    <!-- Row locked (SELECT ... FOR UPDATE NOWAIT) during a sync so that only
+         one synchronisation runs at a time. Its value is never used. -->
+    <record id="param_sync_lock" model="ir.config_parameter">
+        <field name="key">eurekam_jira.sync_lock</field>
+        <field name="value">verrou de synchronisation</field>
+    </record>
+</odoo>

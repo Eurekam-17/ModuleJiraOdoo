@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="jira_sprint_view_list" model="ir.ui.view">
+        <field name="name">jira.sprint.list</field>
+        <field name="model">jira.sprint</field>
+        <field name="arch" type="xml">
+            <list string="Sprints Jira" create="0" edit="0" delete="0"
+                  decoration-info="state == 'active'" decoration-muted="state == 'closed'">
+                <field name="name"/>
+                <field name="jira_id" optional="hide"/>
+                <field name="state" widget="badge"/>
+                <field name="start_date"/>
+                <field name="end_date"/>
+                <field name="complete_date" optional="show"/>
+                <field name="board_id" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="jira_sprint_view_form" model="ir.ui.view">
+        <field name="name">jira.sprint.form</field>
+        <field name="model">jira.sprint</field>
+        <field name="arch" type="xml">
+            <form string="Sprint Jira" create="0" edit="0" delete="0">
+                <header>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title"><h1><field name="name"/></h1></div>
+                    <group>
+                        <group>
+                            <field name="jira_id"/>
+                            <field name="board_id"/>
+                        </group>
+                        <group>
+                            <field name="start_date"/>
+                            <field name="end_date"/>
+                            <field name="complete_date"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="jira_sprint_view_search" model="ir.ui.view">
+        <field name="name">jira.sprint.search</field>
+        <field name="model">jira.sprint</field>
+        <field name="arch" type="xml">
+            <search string="Sprints Jira">
+                <field name="name"/>
+                <filter name="filter_active" string="Actifs" domain="[('state', '=', 'active')]"/>
+                <filter name="filter_future" string="À venir" domain="[('state', '=', 'future')]"/>
+                <filter name="filter_closed" string="Terminés" domain="[('state', '=', 'closed')]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_state" string="État" context="{'group_by': 'state'}"/>
+                    <filter name="group_board" string="Tableau" context="{'group_by': 'board_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_jira_sprint" model="ir.actions.act_window">
+        <field name="name">Sprints</field>
+        <field name="res_model">jira.sprint</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

@@ -1,0 +1,27 @@
+# Configuration sensible : JAMAIS committer les identifiants reels
+config/odoo_test.json
+config/odoo_prod.json
+config/*.local.json
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+
+# Odoo
+*.log
+
+# Editeurs / IDE / Claude
+.vscode/
+.idea/
+.claude/
+*.swp
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini

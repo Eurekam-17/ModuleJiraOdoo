@@ -1,0 +1,43 @@
+[
+  {
+    "id": "30201",
+    "key": "DP-1",
+    "fields": {
+      "summary": "Idée de test 5",
+      "issuetype": {
+        "id": "10001",
+        "name": "Story"
+      },
+      "status": {
+        "name": "À faire",
+        "statusCategory": {
+          "key": "new"
+        }
+      },
+      "priority": {
+        "name": "Medium"
+      },
+      "resolution": null,
+      "created": "2025-01-10T09:00:00.000+0100",
+      "updated": "2025-02-01T10:00:00.000+0100",
+      "resolutiondate": null,
+      "duedate": null,
+      "fixVersions": [],
+      "components": [
+        {
+          "name": "Interface"
+        }
+      ],
+      "labels": [
+        "test"
+      ],
+      "project": {
+        "id": "10008",
+        "key": "DP",
+        "name": "Projet de test DP"
+      },
+      "assignee": null,
+      "customfield_10020": null
+    }
+  }
+]

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.eurekam_jira_sync</field>
+        <field name="model">res.config.settings</field>
+        <field name="priority" eval="95"/>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app data-string="Développement Drugcam" string="Développement Drugcam"
+                     name="eurekam_jira_sync" groups="base.group_system">
+                    <block title="Connexion à Jira (lecture seule)" name="jira_connection_block">
+                        <setting id="jira_base_url_setting" string="URL Jira"
+                                 help="Adresse du site Jira Cloud.">
+                            <field name="jira_base_url"/>
+                        </setting>
+                        <setting id="jira_user_email_setting" string="Compte technique"
+                                 help="Compte Atlassian technique, en lecture seule sur les projets synchronisés, fuseau Europe/Paris.">
+                            <field name="jira_user_email"/>
+                        </setting>
+                        <setting id="jira_api_token_setting" string="Jeton d'API"
+                                 help="À saisir directement ici, jamais par e-mail, chat ou fichier.">
+                            <field name="jira_api_token" password="True"/>
+                        </setting>
+                        <setting id="jira_project_keys_setting" string="Projets synchronisés"
+                                 help="Clés séparées par des virgules.">
+                            <field name="jira_project_keys"/>
+                        </setting>
+                        <setting id="jira_test_setting" string="Vérifier la connexion"
+                                 help="Enregistre les paramètres puis interroge Jira (lecture seule).">
+                            <button name="action_jira_test_connection" type="object"
+                                    string="Tester la connexion" class="btn-link" icon="oi-arrow-right"/>
+                        </setting>
+                    </block>
+                    <block title="Champs personnalisés Jira" name="jira_fields_block">
+                        <setting id="jira_fields_setting" string="Champs détectés"
+                                 help="Identifiants des champs « Sprint » et « Epic Link », détectés automatiquement.">
+                            <div class="row">
+                                <label for="jira_sprint_field" class="col-lg-4 o_light_label"/>
+                                <field name="jira_sprint_field" readonly="1"/>
+                            </div>
+                            <div class="row">
+                                <label for="jira_epic_link_field" class="col-lg-4 o_light_label"/>
+                                <field name="jira_epic_link_field" readonly="1"/>
+                            </div>
+                            <button name="action_jira_detect_fields" type="object"
+                                    string="Détecter les champs" class="btn-link" icon="oi-arrow-right"/>
+                        </setting>
+                    </block>
+                    <block title="Synchronisation" name="jira_sync_block">
+                        <setting id="jira_sync_setting" string="Synchronisation"
+                                 help="Automatique toutes les 30 minutes ; réconciliation chaque semaine.">
+                            <div class="row">
+                                <label for="jira_last_sync_at" class="col-lg-4 o_light_label"/>
+                                <field name="jira_last_sync_at"/>
+                            </div>
+                            <div class="mt8">
+                                <button name="action_jira_sync_now" type="object"
+                                        string="Synchroniser maintenant" class="btn-primary"/>
+                                <button name="action_jira_full_resync" type="object"
+                                        string="Resynchronisation complète" class="btn-secondary ms-2"
+                                        confirm="Relire tous les tickets des projets synchronisés ? L'opération dure quelques minutes et s'exécute en arrière-plan."/>
+                            </div>
+                            <div class="mt8">
+                                <button name="%(action_jira_sync_log)d" type="action"
+                                        string="Journal de synchronisation" class="btn-link" icon="oi-arrow-right"/>
+                            </div>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_jira_settings" model="ir.actions.act_window">
+        <field name="name">Paramètres</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_mode">form</field>
+        <field name="target">inline</field>
+        <field name="context">{'module': 'eurekam_jira_sync', 'bin_size': False}</field>
+    </record>
+</odoo>

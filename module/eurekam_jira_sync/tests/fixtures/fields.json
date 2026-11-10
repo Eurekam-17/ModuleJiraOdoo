@@ -1,0 +1,42 @@
+[
+  {
+    "id": "summary",
+    "name": "Résumé",
+    "custom": false,
+    "schema": {
+      "type": "string",
+      "system": "summary"
+    }
+  },
+  {
+    "id": "customfield_10014",
+    "name": "Epic Link",
+    "custom": true,
+    "schema": {
+      "type": "any",
+      "custom": "com.pyxis.greenhopper.jira:gh-epic-link",
+      "customId": 10014
+    }
+  },
+  {
+    "id": "customfield_10016",
+    "name": "Story point estimate",
+    "custom": true,
+    "schema": {
+      "type": "number",
+      "custom": "com.atlassian.jira.plugin.system.customfieldtypes:float",
+      "customId": 10016
+    }
+  },
+  {
+    "id": "customfield_10020",
+    "name": "Sprint",
+    "custom": true,
+    "schema": {
+      "type": "array",
+      "items": "json",
+      "custom": "com.pyxis.greenhopper.jira:gh-sprint",
+      "customId": 10020
+    }
+  }
+]

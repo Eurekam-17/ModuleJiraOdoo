@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="jira_sync_log_view_list" model="ir.ui.view">
+        <field name="name">jira.sync.log.list</field>
+        <field name="model">jira.sync.log</field>
+        <field name="arch" type="xml">
+            <list string="Journal de synchronisation" create="0" edit="0" delete="0"
+                  decoration-danger="state == 'failed'" decoration-info="state == 'running'">
+                <field name="started_at"/>
+                <field name="ended_at" optional="hide"/>
+                <field name="duration" optional="show"/>
+                <field name="mode"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'done'"
+                       decoration-danger="state == 'failed'"
+                       decoration-info="state == 'running'"/>
+                <field name="issues_created"/>
+                <field name="issues_updated"/>
+                <field name="issues_archived"/>
+                <field name="versions_synced" optional="show"/>
+                <field name="sprints_synced" optional="show"/>
+                <field name="message" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="jira_sync_log_view_form" model="ir.ui.view">
+        <field name="name">jira.sync.log.form</field>
+        <field name="model">jira.sync.log</field>
+        <field name="arch" type="xml">
+            <form string="Journal de synchronisation" create="0" edit="0" delete="0">
+                <header>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="mode"/>
+                            <field name="started_at"/>
+                            <field name="ended_at"/>
+                            <field name="duration"/>
+                        </group>
+                        <group>
+                            <field name="issues_created"/>
+                            <field name="issues_updated"/>
+                            <field name="issues_archived"/>
+                            <field name="versions_synced"/>
+                            <field name="sprints_synced"/>
+                        </group>
+                    </group>
+                    <field name="message"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="jira_sync_log_view_search" model="ir.ui.view">
+        <field name="name">jira.sync.log.search</field>
+        <field name="model">jira.sync.log</field>
+        <field name="arch" type="xml">
+            <search string="Journal de synchronisation">
+                <filter name="filter_failed" string="En échec" domain="[('state', '=', 'failed')]"/>
+                <filter name="filter_done" string="Terminées" domain="[('state', '=', 'done')]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_mode" string="Mode" context="{'group_by': 'mode'}"/>
+                    <filter name="group_state" string="État" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_jira_sync_log" model="ir.actions.act_window">
+        <field name="name">Journal de synchronisation</field>
+        <field name="res_model">jira.sync.log</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

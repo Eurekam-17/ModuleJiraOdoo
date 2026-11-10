@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Anchored on //sheet (structural, always present): the ticket form is
+         customised by other modules, field anchors are fragile. -->
+    <record id="helpdesk_ticket_view_form_jira" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.form.jira</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="inherit_id" ref="helpdesk.helpdesk_ticket_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <group string="Développement" name="jira_development">
+                    <group>
+                        <field name="jira_key" placeholder="ex. DC-922"/>
+                        <field name="jira_issue_id"
+                               invisible="not jira_key"
+                               options="{'no_create': True, 'no_open': False}"/>
+                        <field name="jira_url" widget="url" string="Ouvrir dans Jira"
+                               invisible="not jira_issue_id"/>
+                    </group>
+                    <group invisible="not jira_issue_id">
+                        <field name="jira_status"/>
+                        <field name="jira_status_category"/>
+                        <field name="jira_fix_versions"/>
+                        <field name="jira_resolved_at" string="Date de livraison (résolution Jira)"/>
+                        <field name="jira_is_delivered"/>
+                        <field name="jira_delivery_days" invisible="not jira_is_delivered"/>
+                    </group>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="helpdesk_ticket_view_search_jira" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.search.jira</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="inherit_id" ref="helpdesk.helpdesk_tickets_view_search_base"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <field name="jira_key"/>
+                <filter name="filter_jira_linked" string="Lié à un ticket Jira"
+                        domain="[('jira_issue_id', '!=', False)]"/>
+                <filter name="filter_jira_open" string="Correctif Jira en attente"
+                        domain="[('jira_issue_id', '!=', False), ('jira_status_category', '!=', 'done')]"/>
+                <filter name="filter_jira_delivered" string="Correctif livré"
+                        domain="[('jira_is_delivered', '=', True)]"/>
+                <filter name="filter_jira_unknown_key" string="Clé Jira introuvable"
+                        domain="[('jira_key', '!=', False), ('jira_issue_id', '=', False)]"/>
+                <filter name="group_jira_status" string="Statut Jira"
+                        context="{'group_by': 'jira_status'}"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
