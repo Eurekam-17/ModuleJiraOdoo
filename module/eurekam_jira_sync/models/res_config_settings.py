@@ -1,5 +1,9 @@
 from odoo import api, fields, models
 
+from .jira_mapping import token_expiry_status
+
+TOKEN_EXPIRY_PARAM = 'eurekam_jira.token_expires_on'
+
 
 class ResConfigSettings(models.TransientModel):
     _inherit = 'res.config.settings'
@@ -17,6 +21,17 @@ class ResConfigSettings(models.TransientModel):
         help="Jeton d'API du compte technique (id.atlassian.com > Sécurité > "
              "Jetons d'API). Visible des seuls administrateurs système ; il "
              "n'est jamais écrit dans les journaux.")
+    # Saved by set_values() (a Date is not a config_parameter type).
+    jira_token_expires_on = fields.Date(
+        string="Expiration du jeton",
+        help="Date d'expiration choisie lors de la création du jeton sur "
+             "id.atlassian.com. Atlassian ne permet pas de la relire avec le "
+             "jeton : saisissez-la à chaque nouveau jeton. La synchronisation "
+             "le signale dans son journal 15 jours avant l'échéance.")
+    jira_token_expiry_alert = fields.Char(
+        string='Alerte jeton', compute='_compute_jira_token_expiry')
+    jira_token_expiry_info = fields.Char(
+        string='Validité du jeton', compute='_compute_jira_token_expiry')
     jira_project_keys = fields.Char(
         string='Projets', config_parameter='eurekam_jira.project_keys', default='DA,DC,DP',
         help="Clés des projets Jira à synchroniser, séparées par des virgules.")
@@ -41,7 +56,24 @@ class ResConfigSettings(models.TransientModel):
         res = super().get_values()
         value = self.env['ir.config_parameter'].sudo().get_param('eurekam_jira.last_sync_at')
         res['jira_last_sync_at'] = fields.Datetime.to_datetime(value) if value else False
+        expiry = self.env['ir.config_parameter'].sudo().get_param(TOKEN_EXPIRY_PARAM)
+        res['jira_token_expires_on'] = fields.Date.to_date(expiry) if expiry else False
         return res
+
+    def set_values(self):
+        super().set_values()
+        params = self.env['ir.config_parameter'].sudo()
+        value = fields.Date.to_string(self.jira_token_expires_on) or False
+        if (params.get_param(TOKEN_EXPIRY_PARAM) or False) != value:
+            params.set_param(TOKEN_EXPIRY_PARAM, value)
+
+    @api.depends('jira_token_expires_on')
+    def _compute_jira_token_expiry(self):
+        today = fields.Date.context_today(self)
+        for settings in self:
+            _days, alert, info = token_expiry_status(settings.jira_token_expires_on, today)
+            settings.jira_token_expiry_alert = alert
+            settings.jira_token_expiry_info = info
 
     def _jira_save(self):
         """Buttons act on saved parameters: save the form first."""

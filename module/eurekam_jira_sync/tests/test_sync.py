@@ -1,5 +1,7 @@
+from datetime import timedelta
 from unittest.mock import patch
 
+from odoo import fields
 from odoo.tests import tagged
 
 from .common import (
@@ -194,6 +196,18 @@ class TestJiraSync(JiraSyncCase):
         self.assertEqual(self.param('last_sync_at'), '2026-01-01 00:00:00')
         self.assertFalse(self.issue('DA-65'))
         self.assertEqual(len(fake.calls), 1, "401 must stop immediately")
+
+    def test_08c_token_expiry_warning(self):
+        """A token expiring soon is reported in the journal; no date, no noise."""
+        log = self.sync(standard_jira().set_search([[make_issue('DA-66', 50066)]]))
+        self.assertFalse(log.message)
+        soon = fields.Date.context_today(self.Service) + timedelta(days=3)
+        self.set_param('token_expires_on', fields.Date.to_string(soon))
+        with self.assertLogs(LOGGER, level='WARNING'):
+            log = self.sync(standard_jira().set_search([[make_issue('DA-66', 50066)]]))
+        self.assertEqual(log.state, 'done', log.message)
+        self.assertIn("Le jeton d'API Jira expire le", log.message)
+        self.assertIn('dans 3 jours', log.message)
 
     # 9. Secrets ------------------------------------------------------------
     def test_09_token_never_in_log_message_nor_logs(self):

@@ -1,6 +1,6 @@
 {
     'name': 'Eurekam - Synchronisation Jira',
-    'version': '18.0.1.0.6',
+    'version': '18.0.1.0.7',
     'category': 'Productivity',
     'summary': "Copie en lecture seule des tickets, versions et sprints Jira "
                "du développement Drugcam",

@@ -38,6 +38,7 @@ Les données servent aux tableaux de bord Odoo et au lien avec l'Assistance
 | URL Jira | `eurekam_jira.base_url` | `https://eurekam.atlassian.net` |
 | Compte technique | `eurekam_jira.user_email` | — |
 | Jeton d'API | `eurekam_jira.api_token` | — (à saisir directement ici, jamais par e-mail, chat ou fichier) |
+| Expiration du jeton | `eurekam_jira.token_expires_on` | — (date choisie à la création du jeton ; Atlassian ne permet pas de la relire) |
 | Projets synchronisés | `eurekam_jira.project_keys` | `DA,DC,DP` |
 | Champ sprint / Epic Link | `eurekam_jira.sprint_field`, `eurekam_jira.epic_link_field` | détectés automatiquement |
 | Dernière synchronisation | `eurekam_jira.last_sync_at` | renseignée à chaque succès |

@@ -18,7 +18,7 @@ class JiraSyncCase(TransactionCase):
         for key, value in (('base_url', BASE_URL), ('user_email', FAKE_EMAIL),
                            ('api_token', FAKE_TOKEN), ('project_keys', 'DA,DC,DP'),
                            ('sprint_field', False), ('epic_link_field', False),
-                           ('nature_field', False),
+                           ('nature_field', False), ('token_expires_on', False),
                            ('last_sync_at', False), ('force_full', False)):
             params.set_param('eurekam_jira.%s' % key, value)
         cls.Service = cls.env['jira.sync.service']

@@ -3,7 +3,7 @@
 They are mixins, run by ``test_client.py`` under Odoo, and also runnable
 without Odoo by ``scripts/run_local_tests.py``. They never call the real Jira.
 """
-from datetime import datetime
+from datetime import date, datetime
 from unittest.mock import patch
 
 from ..models import jira_client, jira_mapping
@@ -228,6 +228,27 @@ class MappingCases:
         self.assertEqual(str(past_unreleased['release_date']), '2025-06-01')
         long_text = jira_mapping.version_to_vals({'id': 1, 'name': 'x', 'description': 'y' * 400})
         self.assertEqual(len(long_text['description']), 255)
+
+
+    def test_token_expiry_status(self):
+        status = jira_mapping.token_expiry_status
+        today = date(2026, 11, 13)
+        self.assertEqual(status(False, today), (None, False, False))
+        days, alert, info = status('2027-05-01', today)
+        self.assertEqual(days, 169)
+        self.assertFalse(alert)
+        self.assertEqual(info, 'Valable encore 169 jours.')
+        # The warning starts TOKEN_WARNING_DAYS days before.
+        self.assertFalse(status(date(2026, 11, 29), today)[1])
+        days, alert, info = status(date(2026, 11, 28), today)
+        self.assertEqual(days, 15)
+        self.assertIn('expire le 28/11/2026, dans 15 jours', alert)
+        self.assertFalse(info)
+        self.assertIn('dans 1 jour.', status(date(2026, 11, 14), today)[1])
+        self.assertIn("expire aujourd'hui", status(today, today)[1])
+        days, alert, _info = status('2026-11-01', today)
+        self.assertEqual(days, -12)
+        self.assertIn('a expiré le 01/11/2026', alert)
 
 
 # Silence "unused import" for helpers re-exported to test modules.

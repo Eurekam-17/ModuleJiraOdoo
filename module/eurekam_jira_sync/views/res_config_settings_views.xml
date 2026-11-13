@@ -19,8 +19,16 @@
                             <field name="jira_user_email"/>
                         </setting>
                         <setting id="jira_api_token_setting" string="Jeton d'API"
-                                 help="À saisir directement ici, jamais par e-mail, chat ou fichier.">
+                                 help="À saisir directement ici, jamais par e-mail, chat ou fichier, avec sa date d'expiration.">
                             <field name="jira_api_token" password="True"/>
+                            <div class="mt-2">
+                                <label for="jira_token_expires_on" class="o_light_label me-2"/>
+                                <field name="jira_token_expires_on" class="oe_inline"/>
+                            </div>
+                            <field name="jira_token_expiry_info" class="text-muted"
+                                   invisible="not jira_token_expiry_info"/>
+                            <field name="jira_token_expiry_alert" class="text-danger fw-bold"
+                                   invisible="not jira_token_expiry_alert"/>
                         </setting>
                         <setting id="jira_project_keys_setting" string="Projets synchronisés"
                                  help="Clés séparées par des virgules.">

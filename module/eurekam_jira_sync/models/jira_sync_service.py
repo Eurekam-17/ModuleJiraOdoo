@@ -22,7 +22,7 @@ from odoo.exceptions import UserError
 from .jira_client import JiraAuthError, JiraClient, JiraError, scrub
 from .jira_mapping import (
     ISSUE_FIELDS, format_jql_datetime, issue_to_vals, pick_sprint, sprint_to_vals,
-    version_to_vals,
+    token_expiry_status, version_to_vals,
 )
 
 _logger = logging.getLogger(__name__)
@@ -206,6 +206,7 @@ class JiraSyncService(models.AbstractModel):
                 # Only after a fully successful run. The START time is stored
                 # so that updates made during the run are fetched next time.
                 self._set_param('last_sync_at', fields.Datetime.to_string(started_at))
+            self._check_token_expiry(run)
             message = '\n'.join(run.warnings) or False
             log.write(dict(run.log_vals(), state='done', ended_at=fields.Datetime.now(),
                            message=scrub(message, token) if message else False))
@@ -223,11 +224,20 @@ class JiraSyncService(models.AbstractModel):
             if commit and not _is_testing():
                 self.env.cr.rollback()
                 log = Log.browse(log.id)
+            self._check_token_expiry(run)
             details = '\n'.join([text] + run.warnings)
             log.write(dict(run.log_vals(), state='failed', ended_at=fields.Datetime.now(),
                            message=scrub(details, token)))
             self._commit(commit)
             return log
+
+    def _check_token_expiry(self, run):
+        """Add a warning to the run when the API token expires soon."""
+        alert = token_expiry_status(self._param('token_expires_on'),
+                                    fields.Date.context_today(self))[1]
+        if alert:
+            run.warnings.append(alert)
+            _logger.warning("Jira sync: %s", alert)
 
     # ------------------------------------------------------------------
     # Steps

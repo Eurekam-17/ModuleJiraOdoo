@@ -9,7 +9,7 @@ assignee/reporter identities are never requested nor returned here; the
 assignee only yields the boolean ``is_assigned``.
 """
 import re
-from datetime import datetime, timedelta, timezone
+from datetime import date, datetime, timedelta, timezone
 
 ISSUE_FIELDS = (
     'summary', 'issuetype', 'status', 'priority', 'resolution', 'created',
@@ -239,3 +239,37 @@ def normalize_jira_key(value):
     if len(keys) > 1:
         return None, 'plusieurs clés Jira (%s)' % ', '.join(keys)
     return keys[0], None
+
+
+# The API token expiry cannot be read with the token itself (Atlassian only
+# exposes it to organisation admins): the date is typed in the settings when
+# the token is created, and the sync warns this many days before it.
+TOKEN_WARNING_DAYS = 15
+
+
+def token_expiry_status(expires_on, today):
+    """Return ``(days_left, alert, info)`` for the API token expiry date.
+
+    ``expires_on``: a ``date`` or ``'YYYY-MM-DD'`` string, or False when not
+    entered. ``alert`` is a message when the token expires within
+    ``TOKEN_WARNING_DAYS`` days (or has expired), else False; ``info`` is the
+    quiet "still valid" text otherwise.
+    """
+    if not expires_on:
+        return None, False, False
+    if isinstance(expires_on, str):
+        expires_on = date.fromisoformat(expires_on[:10])
+    days_left = (expires_on - today).days
+    shown = expires_on.strftime('%d/%m/%Y')
+    renew = ("Créez-en un nouveau sur id.atlassian.com, puis saisissez-le ici "
+             "avec sa date d'expiration.")
+    if days_left < 0:
+        return days_left, ("Le jeton d'API Jira a expiré le %s : la synchronisation "
+                           "ne fonctionne plus. %s" % (shown, renew)), False
+    if days_left == 0:
+        return days_left, ("Le jeton d'API Jira expire aujourd'hui (%s). %s"
+                           % (shown, renew)), False
+    if days_left <= TOKEN_WARNING_DAYS:
+        return days_left, ("Le jeton d'API Jira expire le %s, dans %s jour%s. %s"
+                           % (shown, days_left, 's' if days_left > 1 else '', renew)), False
+    return days_left, False, "Valable encore %s jours." % days_left
