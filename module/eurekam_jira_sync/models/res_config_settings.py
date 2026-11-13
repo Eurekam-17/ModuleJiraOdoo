@@ -1,4 +1,4 @@
-from odoo import fields, models
+from odoo import api, fields, models
 
 
 class ResConfigSettings(models.TransientModel):
@@ -30,14 +30,18 @@ class ResConfigSettings(models.TransientModel):
         help="Identifiant du champ personnalisé « Nature du travail », détecté "
              "automatiquement.")
     # Display only (not a config_parameter field: saving the settings page
-    # must never overwrite the value written by the cron).
+    # must never overwrite the value written by the cron). Loaded by
+    # get_values(): a dependency-less compute is not evaluated when the
+    # settings page opens, so the field stayed empty.
     jira_last_sync_at = fields.Datetime(
-        string='Dernière synchronisation réussie', compute='_compute_jira_last_sync_at')
+        string='Dernière synchronisation réussie', readonly=True)
 
-    def _compute_jira_last_sync_at(self):
+    @api.model
+    def get_values(self):
+        res = super().get_values()
         value = self.env['ir.config_parameter'].sudo().get_param('eurekam_jira.last_sync_at')
-        for settings in self:
-            settings.jira_last_sync_at = fields.Datetime.to_datetime(value) if value else False
+        res['jira_last_sync_at'] = fields.Datetime.to_datetime(value) if value else False
+        return res
 
     def _jira_save(self):
         """Buttons act on saved parameters: save the form first."""
