@@ -49,12 +49,27 @@
         <field name="arch" type="xml">
             <search string="Sprints Jira">
                 <field name="name"/>
+                <field name="board_id"/>
                 <filter name="filter_active" string="Actifs" domain="[('state', '=', 'active')]"/>
                 <filter name="filter_future" string="À venir" domain="[('state', '=', 'future')]"/>
                 <filter name="filter_closed" string="Terminés" domain="[('state', '=', 'closed')]"/>
+                <separator/>
+                <filter name="filter_started_12m" string="Commencés sur 12 mois"
+                        domain="[('start_date', '>=', (context_today() - relativedelta(days=365)).strftime('%Y-%m-%d'))]"/>
+                <filter name="filter_closed_3m" string="Terminés sur 3 mois"
+                        domain="[('complete_date', '>=', (context_today() - relativedelta(days=90)).strftime('%Y-%m-%d'))]"/>
+                <filter name="filter_overdue" string="Actifs, fin prévue dépassée"
+                        domain="[('state', '=', 'active'), ('end_date', '&lt;', context_today().strftime('%Y-%m-%d'))]"/>
+                <separator/>
+                <filter name="filter_no_date" string="Sans date de début"
+                        domain="[('start_date', '=', False)]"/>
                 <group expand="0" string="Regrouper par">
                     <filter name="group_state" string="État" context="{'group_by': 'state'}"/>
                     <filter name="group_board" string="Tableau" context="{'group_by': 'board_id'}"/>
+                    <filter name="group_start" string="Mois de début"
+                            context="{'group_by': 'start_date:month'}"/>
+                    <filter name="group_complete" string="Mois de clôture"
+                            context="{'group_by': 'complete_date:month'}"/>
                 </group>
             </search>
         </field>

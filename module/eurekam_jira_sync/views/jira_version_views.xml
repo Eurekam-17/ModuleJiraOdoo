@@ -63,15 +63,35 @@
             <search string="Versions Jira">
                 <field name="name"/>
                 <field name="project_id"/>
+                <field name="description"/>
                 <filter name="filter_released" string="Livrées" domain="[('released', '=', True)]"/>
                 <filter name="filter_unreleased" string="Non livrées" domain="[('released', '=', False)]"/>
                 <separator/>
+                <!-- Only released == True counts as delivered (CLAUDE.md §7.3). -->
+                <filter name="filter_released_12m" string="Livrées sur 12 mois"
+                        domain="[('released', '=', True), ('release_date', '>=', (context_today() - relativedelta(days=365)).strftime('%Y-%m-%d'))]"/>
+                <filter name="filter_late" string="Date de livraison dépassée, non livrées"
+                        domain="[('released', '=', False), ('release_date', '&lt;', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter name="filter_no_date" string="Sans date de livraison"
+                        domain="[('release_date', '=', False)]"/>
+                <separator/>
+                <filter name="filter_open_issues" string="Avec tickets ouverts"
+                        domain="[('open_issue_count', '>', 0)]"/>
+                <separator/>
+                <filter name="filter_da_dc" string="Projets DA et DC"
+                        domain="[('project_id.key', 'in', ['DA', 'DC'])]"/>
+                <separator/>
                 <filter name="filter_not_archived" string="Non archivées dans Jira"
                         domain="[('archived', '=', False)]"/>
+                <filter name="filter_archived" string="Archivées dans Jira"
+                        domain="[('archived', '=', True)]"/>
                 <group expand="0" string="Regrouper par">
                     <filter name="group_project" string="Projet" context="{'group_by': 'project_id'}"/>
+                    <filter name="group_released" string="Livrée" context="{'group_by': 'released'}"/>
                     <filter name="group_release" string="Mois de livraison"
                             context="{'group_by': 'release_date:month'}"/>
+                    <filter name="group_release_year" string="Année de livraison"
+                            context="{'group_by': 'release_date:year'}"/>
                 </group>
             </search>
         </field>
