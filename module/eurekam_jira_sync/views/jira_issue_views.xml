@@ -148,7 +148,9 @@
             <pivot string="Tickets Jira" sample="1">
                 <field name="project_id" type="row"/>
                 <field name="status_category" type="col"/>
-                <field name="lead_time_days" type="measure"/>
+                <!-- No explicit measure: the pivot counts tickets by default.
+                     The delay is only set on delivered tickets, so it is left
+                     to the « Mesures » menu (use it with the « Livrés » filter). -->
             </pivot>
         </field>
     </record>
