@@ -25,7 +25,7 @@ Les données servent aux tableaux de bord Odoo et au lien avec l'Assistance
    rechercher « Synchronisation Jira », installer. Installer ensuite
    « Lien Assistance / Jira » (`eurekam_jira_helpdesk`).
 3. Donner le groupe **« Jira : administrateur »** à la personne qui configure
-   (Paramètres → Utilisateurs). L'administrateur Odoo l'a déjà.
+   (Paramètres → Utilisateurs). Les administrateurs système l'ont automatiquement.
 4. Donner **« Jira : lecteur »** aux membres du comité de direction et de la R&D. Les
    utilisateurs de l'Assistance l'ont automatiquement (module pont).
 

@@ -19,4 +19,11 @@
         <field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
         <field name="comment">Paramètres, synchronisation manuelle et journaux.</field>
     </record>
+
+    <!-- The settings page is open to system administrators, so they also get
+         the journal and the manual sync. Writing implied_ids adds the group to
+         existing administrators; uninstalling the module drops the link. -->
+    <record id="base.group_system" model="res.groups">
+        <field name="implied_ids" eval="[(4, ref('group_jira_admin'))]"/>
+    </record>
 </odoo>
