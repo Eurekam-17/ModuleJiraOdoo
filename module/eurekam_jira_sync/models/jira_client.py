@@ -30,6 +30,8 @@ BACKOFF_CAP = 60
 SEARCH_PATH = '/rest/api/3/search/jql'
 SPRINT_SCHEMA = 'com.pyxis.greenhopper.jira:gh-sprint'
 EPIC_LINK_SCHEMA = 'com.pyxis.greenhopper.jira:gh-epic-link'
+# Eurekam's own single-select field, found by name (its id differs per site).
+NATURE_FIELD_NAME = 'Nature du travail'
 
 # The only POST target allowed: Jira's search endpoint (a read).
 _READ_ONLY_POSTS = (SEARCH_PATH,)
@@ -176,15 +178,20 @@ class JiraClient:
         return self.get('/rest/api/3/project/%s/versions' % key)
 
     def detect_custom_fields(self):
-        """Return ``(sprint_field_id, epic_link_field_id)``, either may be None."""
-        sprint = epic = None
+        """Return the custom field ids ``{'sprint', 'epic_link', 'nature'}``;
+        a value is None when the field does not exist on the site."""
+        found = {'sprint': None, 'epic_link': None, 'nature': None}
         for field in self.get_fields() or []:
             custom = (field.get('schema') or {}).get('custom')
-            if custom == SPRINT_SCHEMA and not sprint:
-                sprint = field.get('id')
-            elif custom == EPIC_LINK_SCHEMA and not epic:
-                epic = field.get('id')
-        return sprint, epic
+            name = (field.get('name') or '').strip().casefold()
+            if custom == SPRINT_SCHEMA and not found['sprint']:
+                found['sprint'] = field.get('id')
+            elif custom == EPIC_LINK_SCHEMA and not found['epic_link']:
+                found['epic_link'] = field.get('id')
+            elif (field.get('custom') and name == NATURE_FIELD_NAME.casefold()
+                  and not found['nature']):
+                found['nature'] = field.get('id')
+        return found
 
     def search_pages(self, jql, fields, max_results=100):
         """Yield pages (lists of issues) from ``POST /rest/api/3/search/jql``.

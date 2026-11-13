@@ -8,7 +8,8 @@ from unittest.mock import patch
 
 from ..models import jira_client, jira_mapping
 from .common import (
-    BASE_URL, FAKE_EMAIL, FAKE_TOKEN, SEARCH_PATH, SPRINT_FIELD, FakeJira, FakeResponse,
+    BASE_URL, FAKE_EMAIL, FAKE_TOKEN, NATURE_FIELD, SEARCH_PATH, SPRINT_FIELD, FakeJira,
+    FakeResponse,
     load_fixture, make_issue, make_parent, make_sprint,
 )
 
@@ -108,7 +109,13 @@ class ClientCases:
     def test_client_detect_custom_fields(self):
         fake = FakeJira().add('GET', '/rest/api/3/field', load_fixture('fields.json'))
         client = self._client(fake)
-        self.assertEqual(client.detect_custom_fields(), ('customfield_10020', 'customfield_10014'))
+        self.assertEqual(client.detect_custom_fields(), {
+            'sprint': 'customfield_10020', 'epic_link': 'customfield_10014',
+            'nature': 'customfield_10574'})
+        # A site without the field: detection says so, nothing is guessed.
+        fields = [f for f in load_fixture('fields.json') if f['id'] != NATURE_FIELD]
+        client = self._client(FakeJira().add('GET', '/rest/api/3/field', fields))
+        self.assertIsNone(client.detect_custom_fields()['nature'])
 
     def test_scrub(self):
         self.assertEqual(jira_client.scrub('a SECRETVALUE b', 'SECRETVALUE'), 'a *** b')
@@ -154,7 +161,21 @@ class MappingCases:
         self.assertEqual(set(vals) - {'_project', '_versions', '_sprints'}, {
             'key', 'jira_id', 'summary', 'issue_type', 'status', 'status_category',
             'priority', 'resolution', 'created_at', 'updated_at', 'resolved_at', 'due_date',
-            'components', 'labels', 'parent_key', 'epic_key', 'is_assigned'})
+            'components', 'labels', 'parent_key', 'epic_key', 'is_assigned', 'work_nature'})
+
+    def test_work_nature(self):
+        classified = make_issue('DA-8', 8, nature='Socle technologique')
+        self.assertEqual(jira_mapping.issue_to_vals(classified, SPRINT_FIELD, NATURE_FIELD)
+                         ['work_nature'], 'Socle technologique')
+        # Field not detected yet: no value, even if the payload carries one.
+        self.assertFalse(jira_mapping.issue_to_vals(classified, SPRINT_FIELD)['work_nature'])
+        empty = make_issue('DA-9', 9)
+        self.assertFalse(jira_mapping.issue_to_vals(empty, SPRINT_FIELD, NATURE_FIELD)
+                         ['work_nature'])
+        multi = make_issue('DA-10', 10)
+        multi['fields'][NATURE_FIELD] = [{'value': 'Maintien'}, {'value': 'R&D de projet'}]
+        self.assertEqual(jira_mapping.issue_to_vals(multi, SPRINT_FIELD, NATURE_FIELD)
+                         ['work_nature'], 'Maintien, R&D de projet')
 
     def test_epic_key_only_for_epic_parent(self):
         epic = jira_mapping.issue_to_vals(make_issue('DA-2', 2, parent=make_parent('DA-1', 'Epic')))

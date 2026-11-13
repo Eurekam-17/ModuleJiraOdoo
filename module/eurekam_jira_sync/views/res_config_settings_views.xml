@@ -34,7 +34,7 @@
                     </block>
                     <block title="Champs personnalisés Jira" name="jira_fields_block">
                         <setting id="jira_fields_setting" string="Champs détectés"
-                                 help="Identifiants des champs « Sprint » et « Epic Link », détectés automatiquement.">
+                                 help="Identifiants des champs « Sprint », « Epic Link » et « Nature du travail », détectés automatiquement.">
                             <div class="row">
                                 <label for="jira_sprint_field" class="col-lg-4 o_light_label"/>
                                 <field name="jira_sprint_field" readonly="1"/>
@@ -42,6 +42,10 @@
                             <div class="row">
                                 <label for="jira_epic_link_field" class="col-lg-4 o_light_label"/>
                                 <field name="jira_epic_link_field" readonly="1"/>
+                            </div>
+                            <div class="row">
+                                <label for="jira_nature_field" class="col-lg-4 o_light_label"/>
+                                <field name="jira_nature_field" readonly="1"/>
                             </div>
                             <button name="action_jira_detect_fields" type="object"
                                     string="Détecter les champs" class="btn-link" icon="oi-arrow-right"/>

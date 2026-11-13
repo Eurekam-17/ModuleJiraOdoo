@@ -46,6 +46,10 @@ class JiraIssue(models.Model):
         'jira.sprint', string='Sprint', readonly=True, index=True, ondelete='set null',
         help="Sprint actif du ticket, sinon le plus récent.")
     is_assigned = fields.Boolean(string='Assigné', readonly=True)
+    work_nature = fields.Char(
+        string='Nature du travail', readonly=True, index=True,
+        help="Champ Jira « Nature du travail » : Socle technologique, R&D de projet, "
+             "Évolution produit ou Maintien. Vide si le ticket n'est pas classé.")
 
     is_open = fields.Boolean(
         string='Ouvert', compute='_compute_flags', store=True, index=True,

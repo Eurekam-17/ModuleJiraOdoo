@@ -38,5 +38,15 @@
       "custom": "com.pyxis.greenhopper.jira:gh-sprint",
       "customId": 10020
     }
+  },
+  {
+    "id": "customfield_10574",
+    "name": "Nature du travail",
+    "custom": true,
+    "schema": {
+      "type": "option",
+      "custom": "com.atlassian.jira.plugin.system.customfieldtypes:select",
+      "customId": 10574
+    }
   }
 ]

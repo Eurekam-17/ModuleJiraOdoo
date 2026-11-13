@@ -195,13 +195,13 @@ class JiraSyncService(models.AbstractModel):
             if mode == 'reconcile':
                 self._reconcile(client, run, commit)
             else:
-                sprint_field = self._ensure_custom_fields(client)
+                sprint_field, nature_field = self._ensure_custom_fields(client)
                 self._sync_versions(client, run)
                 self._commit(commit)
                 jql = self._build_jql(run, mode, account.get('timeZone'))
-                fields_list = list(ISSUE_FIELDS) + ([sprint_field] if sprint_field else [])
+                fields_list = list(ISSUE_FIELDS) + [f for f in (sprint_field, nature_field) if f]
                 for page in client.search_pages(jql, fields_list, max_results=PAGE_SIZE):
-                    self._upsert_issues(page, sprint_field, run)
+                    self._upsert_issues(page, sprint_field, run, nature_field)
                     self._commit(commit)
                 # Only after a fully successful run. The START time is stored
                 # so that updates made during the run are fetched next time.
@@ -253,13 +253,21 @@ class JiraSyncService(models.AbstractModel):
             run.projects[key] = project
 
     def _ensure_custom_fields(self, client):
-        """Sprint / epic-link custom field ids: detected, never hard-coded."""
+        """Return ``(sprint_field, nature_field)``: custom field ids detected,
+        never hard-coded. Detection runs again while one is still unknown, so
+        a field created later in Jira is picked up without any action."""
         sprint_field = self._param('sprint_field')
-        if not sprint_field:
-            sprint_field, epic_field = client.detect_custom_fields()
-            self._set_param('sprint_field', sprint_field)
-            self._set_param('epic_link_field', epic_field)
-        return sprint_field or False
+        nature_field = self._param('nature_field')
+        if not sprint_field or not nature_field:
+            self._store_custom_fields(client.detect_custom_fields())
+            sprint_field = self._param('sprint_field')
+            nature_field = self._param('nature_field')
+        return sprint_field or False, nature_field or False
+
+    def _store_custom_fields(self, found):
+        self._set_param('sprint_field', found.get('sprint'))
+        self._set_param('epic_link_field', found.get('epic_link'))
+        self._set_param('nature_field', found.get('nature'))
 
     def _sync_versions(self, client, run):
         Version = self.env['jira.version'].sudo()
@@ -340,7 +348,7 @@ class JiraSyncService(models.AbstractModel):
         run.projects[key] = project
         return project.id
 
-    def _upsert_issues(self, page, sprint_field, run):
+    def _upsert_issues(self, page, sprint_field, run, nature_field=False):
         """Upsert one page of issues, matched by Jira id (stable even when an
         issue moves to another project), then by key."""
         if not page:
@@ -348,7 +356,7 @@ class JiraSyncService(models.AbstractModel):
         Issue = self.env['jira.issue'].sudo().with_context(active_test=False)
         rows = {}
         for raw in page:
-            vals = issue_to_vals(raw, sprint_field)
+            vals = issue_to_vals(raw, sprint_field, nature_field)
             rows[vals['jira_id']] = vals  # last occurrence wins
         rows = list(rows.values())
 
@@ -473,10 +481,13 @@ class JiraSyncService(models.AbstractModel):
         self._check_admin()
         token = self._param('api_token') or ''
         try:
-            sprint, epic = self._get_client().detect_custom_fields()
+            found = self._get_client().detect_custom_fields()
         except JiraError as exc:
             return self._notify(scrub(str(exc), token), kind='danger')
-        self._set_param('sprint_field', sprint)
-        self._set_param('epic_link_field', epic)
-        return self._notify(_("Champ sprint : %(sprint)s — champ « Epic Link » : %(epic)s",
-                              sprint=sprint or _('non trouvé'), epic=epic or _('non trouvé')))
+        self._store_custom_fields(found)
+        missing = _('non trouvé')
+        return self._notify(_(
+            "Champ sprint : %(sprint)s — champ « Epic Link » : %(epic)s — "
+            "champ « Nature du travail » : %(nature)s",
+            sprint=found.get('sprint') or missing, epic=found.get('epic_link') or missing,
+            nature=found.get('nature') or missing))

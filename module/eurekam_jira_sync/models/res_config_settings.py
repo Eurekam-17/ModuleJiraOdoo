@@ -25,6 +25,10 @@ class ResConfigSettings(models.TransientModel):
         help="Identifiant du champ personnalisé « Sprint », détecté automatiquement.")
     jira_epic_link_field = fields.Char(
         string='Champ « Epic Link »', config_parameter='eurekam_jira.epic_link_field')
+    jira_nature_field = fields.Char(
+        string='Champ « Nature du travail »', config_parameter='eurekam_jira.nature_field',
+        help="Identifiant du champ personnalisé « Nature du travail », détecté "
+             "automatiquement.")
     # Display only (not a config_parameter field: saving the settings page
     # must never overwrite the value written by the cron).
     jira_last_sync_at = fields.Datetime(

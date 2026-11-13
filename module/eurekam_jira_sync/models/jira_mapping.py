@@ -101,6 +101,17 @@ def _name(obj):
     return (obj or {}).get('name') or False
 
 
+def _option_value(value):
+    """Label of a select custom field: ``{'value': ...}``, or a list of them
+    for a multi-select (joined by ", ")."""
+    if isinstance(value, list):
+        return ', '.join(v.get('value') for v in value
+                         if isinstance(v, dict) and v.get('value')) or False
+    if isinstance(value, dict):
+        return value.get('value') or False
+    return False
+
+
 def pick_sprint(sprints):
     """Return the issue's current sprint: the active one, else the latest
     by start date. Sprints are matched by id, never by name (names are not
@@ -142,7 +153,7 @@ def version_to_vals(version):
     }
 
 
-def issue_to_vals(issue, sprint_field=None):
+def issue_to_vals(issue, sprint_field=None, nature_field=None):
     """Flatten a Jira issue into plain values.
 
     Relational data is returned raw under ``_project``, ``_versions`` and
@@ -174,6 +185,7 @@ def issue_to_vals(issue, sprint_field=None):
         'parent_key': parent.get('key') or False,
         'epic_key': parent.get('key') if parent_type == 'Epic' else False,
         'is_assigned': bool(fields.get('assignee')),
+        'work_nature': _option_value(fields.get(nature_field)) if nature_field else False,
         '_project': fields.get('project') or {},
         '_versions': fields.get('fixVersions') or [],
         '_sprints': sprints or [],

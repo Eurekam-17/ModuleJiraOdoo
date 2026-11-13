@@ -15,6 +15,7 @@ SEARCH_PATH = '/rest/api/3/search/jql'
 FAKE_TOKEN = 'FAKE-TOKEN-abcdef0123456789'
 FAKE_EMAIL = 'compte-technique@example.com'
 SPRINT_FIELD = 'customfield_10020'
+NATURE_FIELD = 'customfield_10574'
 
 
 def load_fixture(name):
@@ -121,7 +122,7 @@ def make_issue(key, jira_id, summary='Ticket de test', issue_type='Story',
                status='À faire', category='new', resolution=None,
                created='2025-01-10T09:00:00.000+0100', updated='2025-02-01T10:00:00.000+0100',
                resolved=None, versions=(), sprints=None, parent=None, assigned=False,
-               priority='Medium', labels=(), components=(), duedate=None):
+               priority='Medium', labels=(), components=(), duedate=None, nature=None):
     """Realistic but fictional Jira issue payload."""
     project_key = key.split('-')[0]
     project_ids = {'DA': '10006', 'DC': '10007', 'DP': '10008'}
@@ -143,6 +144,7 @@ def make_issue(key, jira_id, summary='Ticket de test', issue_type='Story',
         # Opaque id only: the module must never store who is assigned.
         'assignee': {'accountId': 'opaque-account-id'} if assigned else None,
         SPRINT_FIELD: sprints,
+        NATURE_FIELD: {'id': '1', 'value': nature} if nature else None,
     }
     if parent:
         fields['parent'] = parent

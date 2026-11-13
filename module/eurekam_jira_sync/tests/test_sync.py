@@ -36,6 +36,8 @@ class TestJiraSync(JiraSyncCase):
         self.assertTrue(self.param('last_sync_at'))
         self.assertEqual(self.param('sprint_field'), 'customfield_10020')
         self.assertEqual(self.param('epic_link_field'), 'customfield_10014')
+        self.assertEqual(self.param('nature_field'), 'customfield_10574')
+        self.assertIn('customfield_10574', bodies[0]['fields'])
         self.assertEqual(self.env['jira.project'].search([('key', '=', 'DC')]).jira_id, '10007')
 
     # 2. Upsert -------------------------------------------------------------
@@ -111,6 +113,21 @@ class TestJiraSync(JiraSyncCase):
         closed = Sprint.search([('jira_id', '=', 101)])
         self.assertEqual(closed.state, 'closed')
         self.assertEqual(str(closed.complete_date), '2025-01-20 09:00:00')
+
+    def test_05b_work_nature(self):
+        """The « Nature du travail » field is detected, then synced."""
+        # The sprint field is already known (as on a live database): the
+        # nature field, created later in Jira, must still be detected.
+        self.set_param('sprint_field', 'customfield_10020')
+        issues = [make_issue('DA-56', 50056, nature='Évolution produit'),
+                  make_issue('DA-57', 50057)]
+        self.sync(standard_jira().set_search([issues]))
+        self.assertEqual(self.param('nature_field'), 'customfield_10574')
+        self.assertEqual(self.issue('DA-56').work_nature, 'Évolution produit')
+        self.assertFalse(self.issue('DA-57').work_nature)
+        # Cleared in Jira: cleared in Odoo.
+        self.sync(standard_jira().set_search([[make_issue('DA-56', 50056)]]))
+        self.assertFalse(self.issue('DA-56').work_nature)
 
     # 6. Versions -----------------------------------------------------------
     def test_06_versions_released_flag(self):

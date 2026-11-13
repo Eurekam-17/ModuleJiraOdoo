@@ -20,6 +20,7 @@
                 <field name="fix_version_ids" widget="many2many_tags" optional="show"/>
                 <field name="sprint_id" optional="hide"/>
                 <field name="epic_key" optional="hide"/>
+                <field name="work_nature" optional="show"/>
                 <field name="is_assigned" optional="hide"/>
                 <field name="created_at" optional="show"/>
                 <field name="updated_at" optional="hide"/>
@@ -57,6 +58,7 @@
                         <group string="Planification">
                             <field name="fix_version_ids" widget="many2many_tags"/>
                             <field name="sprint_id"/>
+                            <field name="work_nature"/>
                             <field name="epic_key"/>
                             <field name="parent_key"/>
                             <field name="components"/>
@@ -99,6 +101,7 @@
                 <field name="fix_version_ids"/>
                 <field name="sprint_id"/>
                 <field name="epic_key"/>
+                <field name="work_nature"/>
                 <field name="issue_type"/>
                 <field name="status"/>
                 <field name="labels"/>
@@ -116,6 +119,9 @@
                 <filter name="filter_delivered" string="Livrés" domain="[('is_delivered', '=', True)]"/>
                 <filter name="filter_declined" string="Déclinés" domain="[('is_declined', '=', True)]"/>
                 <separator/>
+                <filter name="filter_no_nature" string="Sans nature du travail"
+                        domain="[('work_nature', '=', False)]"/>
+                <separator/>
                 <filter name="filter_da_dc" string="Projets DA et DC"
                         domain="[('project_id.key', 'in', ['DA', 'DC'])]"/>
                 <separator/>
@@ -132,6 +138,8 @@
                             context="{'group_by': 'fix_version_ids'}"/>
                     <filter name="group_sprint" string="Sprint" context="{'group_by': 'sprint_id'}"/>
                     <filter name="group_epic" string="Épopée" context="{'group_by': 'epic_key'}"/>
+                    <filter name="group_nature" string="Nature du travail"
+                            context="{'group_by': 'work_nature'}"/>
                     <filter name="group_created" string="Mois de création"
                             context="{'group_by': 'created_at:month'}"/>
                     <filter name="group_resolved" string="Mois de résolution"
