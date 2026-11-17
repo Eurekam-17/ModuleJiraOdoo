@@ -1,4 +1,4 @@
-from odoo.exceptions import AccessError
+from odoo.exceptions import AccessError, UserError
 from odoo.tests import tagged
 from odoo.tests.common import new_test_user
 
@@ -91,6 +91,17 @@ class TestJiraRules(JiraSyncCase):
         with self.assertRaises(AccessError):
             self.env['jira.sync.log'].with_user(reader).search([])
         self.env['jira.sync.log'].with_user(admin).search([])
+
+        # No public entry point lets a non-admin start a sync over RPC: the
+        # sync itself is private, the buttons check the admin group.
+        self.assertFalse(hasattr(self.env['jira.sync.service'], 'run'))
+        portal = new_test_user(self.env, login='jira_portal_test', groups='base.group_portal')
+        for user in (outsider, reader, portal):
+            service = self.env['jira.sync.service'].with_user(user)
+            for action in ('action_sync_now', 'action_full_resync',
+                           'action_test_connection', 'action_detect_fields'):
+                with self.assertRaises(UserError, msg='%s by %s' % (action, user.login)):
+                    getattr(service, action)()
 
         root_menu = self.env.ref('eurekam_jira_sync.menu_jira_root')
         visible = self.env['ir.ui.menu'].with_user(outsider).search([('id', '=', root_menu.id)])

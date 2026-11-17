@@ -150,7 +150,7 @@ class JiraSyncService(models.AbstractModel):
         mode = 'incremental'
         if self._param('force_full') or not self._param('last_sync_at'):
             mode = 'full'
-        log = self.run(mode, commit=True)
+        log = self._run(mode, commit=True)
         if mode == 'full' and log and log.state == 'done':
             self._set_param('force_full', False)
             self._commit(True)
@@ -163,15 +163,19 @@ class JiraSyncService(models.AbstractModel):
         self._commit(True)
         if not self._is_configured():
             return False
-        return self.run('reconcile', commit=True)
+        return self._run('reconcile', commit=True)
 
     @api.model
-    def run(self, mode='incremental', commit=False):
+    def _run(self, mode='incremental', commit=False):
         """Run one synchronisation. Returns the ``jira.sync.log`` record, or
         False when another run holds the lock / Jira is not configured.
 
         ``commit`` (cron only, never in tests): commit after each page so a
-        long run is not lost and does not hold huge transactions."""
+        long run is not lost and does not hold huge transactions.
+
+        Private on purpose: a public method can be called over RPC by any
+        user, portal included. Users go through ``action_sync_now`` /
+        ``action_full_resync``, which check the admin group."""
         assert mode in ('incremental', 'full', 'reconcile')
         with self._sync_lock() as acquired:
             if not acquired:

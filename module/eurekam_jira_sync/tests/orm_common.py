@@ -39,7 +39,7 @@ class JiraSyncCase(TransactionCase):
 
     def sync(self, fake, mode='full'):
         with patch('requests.Session.request', side_effect=fake):
-            log = self.Service.run(mode)
+            log = self.Service._run(mode)
         self.assertFalse(fake.writes(), "The integration must never write to Jira")
         return log
 
